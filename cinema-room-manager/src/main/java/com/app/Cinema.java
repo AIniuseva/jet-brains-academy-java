@@ -14,10 +14,17 @@ public class Cinema {
 
         String[][] cinema = cinemaCreation(totalRows, totalSeats);
 
+        int totalNumberOfSeats = totalRows * totalSeats;
+        int numOfPurchasedTickets = 0;
+        double percentageOfPurchasedSeats = 0;
+        int currentIncome = 0;
+        int totalIncome = calculateTotalIncome(totalRows, totalSeats);
+
         int menuChoice = 1;
         while (menuChoice != 0) {
             System.out.println("1. Show the seats");
             System.out.println("2. Buy a ticket");
+            System.out.println("3. Statistics");
             System.out.println("0. Exit");
 
             menuChoice = scanner.nextInt();
@@ -27,7 +34,12 @@ public class Cinema {
                     printCinema(cinema);
                     break;
                 case 2:
-                    buyTicket(cinema);
+                    currentIncome += buyTicket(cinema);
+                    numOfPurchasedTickets++;
+                    percentageOfPurchasedSeats = calculatePercentageOfPurchasedSeats(totalNumberOfSeats, numOfPurchasedTickets);
+                    break;
+                case 3:
+                    printStatistics(numOfPurchasedTickets, percentageOfPurchasedSeats, currentIncome, totalIncome);
                     break;
                 case 0:
                     break;
@@ -71,16 +83,26 @@ public class Cinema {
         System.out.println();
     }
 
-    public static void buyTicket(String[][] cinema) {
-        System.out.println("Enter a row number:");
-        int rowNumber = scanner.nextInt();
-        System.out.println("Enter a seat number in that row:");
-        int seatNumber = scanner.nextInt();
+    public static int buyTicket(String[][] cinema) {
 
-        cinema[rowNumber][seatNumber] = "B";
-        int ticketPrice = calculateTicketPrice(cinema, rowNumber);
+        while (true) {
+            System.out.println("Enter a row number:");
+            int rowNumber = scanner.nextInt();
+            System.out.println("Enter a seat number in that row:");
+            int seatNumber = scanner.nextInt();
 
-        System.out.println("Ticket price: $" + ticketPrice + '\n');
+            if ((cinema.length - 1) < rowNumber || (cinema[0].length - 1) < seatNumber) {
+                System.out.println("Wrong input!");
+            } else if (cinema[rowNumber][seatNumber].equals("B")) {
+                System.out.println("That ticket has already been purchased!");
+            } else {
+                cinema[rowNumber][seatNumber] = "B";
+                int ticketPrice = calculateTicketPrice(cinema, rowNumber);
+                System.out.println("Ticket price: $" + ticketPrice + '\n');
+
+                return ticketPrice;
+            }
+        }
     }
 
     public static int calculateTicketPrice(String[][] cinema, int chosenRow) {
@@ -90,8 +112,31 @@ public class Cinema {
         if (totalNumberOfSeats <= 60) {
             ticketPrice = 10;
         } else {
-            ticketPrice = (chosenRow <= (cinema.length - 1) / 2) ? 10 : 8;
+            ticketPrice = chosenRow <= (cinema.length - 1) / 2 ? 10 : 8;
         }
         return ticketPrice;
+    }
+
+    public static void printStatistics(int numOfPurchasedTickets, double percentageOfPurchasedSeats, int currentIncome, int totalIncome) {
+        System.out.printf("Number of purchased tickets: %d%n", numOfPurchasedTickets);
+        System.out.printf("Percentage: %.2f", percentageOfPurchasedSeats);
+        System.out.print("%\n");
+        System.out.printf("Current income: $%d%n", currentIncome);
+        System.out.printf("Total income: $%d%n%n", totalIncome);
+    }
+
+    public static int calculateTotalIncome(int rows, int seats) {
+        int totalNumberOfSeats = rows * seats;
+
+        if (totalNumberOfSeats <= 60) {
+            return totalNumberOfSeats * 10;
+        }
+
+        return rows % 2 != 0 ? (rows / 2 * seats * 10) + ((rows / 2 + 1) * seats * 8)
+                : (rows / 2 * seats * 10) + (rows / 2 * seats * 8);
+    }
+
+    public static double calculatePercentageOfPurchasedSeats(int totalNumberOfSeats, int numOfPurchasedTickets) {
+        return (double) numOfPurchasedTickets * 100 / (double) totalNumberOfSeats;
     }
 }
