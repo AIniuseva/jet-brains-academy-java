@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Cinema {
     public static final Scanner scanner = new Scanner(System.in);
     public static final String INPUT_MISMATCH_MESSAGE = "Error! Input the numbers.";
-    public static boolean error;
+    private static boolean error;
 
     public static void main(String[] args) {
         int totalRows = 0;
@@ -22,8 +22,8 @@ public class Cinema {
             } catch (InputMismatchException e) {
                 System.out.println(INPUT_MISMATCH_MESSAGE);
                 error = true;
-                scanner.nextLine();
             }
+            scanner.nextLine();
         } while (error);
 
         String[][] cinema = cinemaCreation(totalRows, totalSeats);
@@ -48,8 +48,8 @@ public class Cinema {
                 } catch (InputMismatchException e) {
                     System.out.println(INPUT_MISMATCH_MESSAGE);
                     error = true;
-                    scanner.nextLine();
                 }
+                scanner.nextLine();
             } while (error);
 
             switch (menuChoice) {
@@ -120,8 +120,8 @@ public class Cinema {
                 } catch (InputMismatchException e) {
                     System.out.println(INPUT_MISMATCH_MESSAGE);
                     error = true;
-                    scanner.nextLine();
                 }
+                scanner.nextLine();
             } while (error);
 
             if ((cinema.length - 1) < rowNumber || (cinema[0].length - 1) < seatNumber) {
