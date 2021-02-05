@@ -1,16 +1,30 @@
 package com.app;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Cinema {
-
     public static final Scanner scanner = new Scanner(System.in);
+    public static final String INPUT_MISMATCH_MESSAGE = "Error! Input the numbers.";
+    public static boolean error;
 
     public static void main(String[] args) {
-        System.out.println("Enter the number of rows:");
-        int totalRows = scanner.nextInt();
-        System.out.println("Enter the number of seats in each row:");
-        int totalSeats = scanner.nextInt();
+        int totalRows = 0;
+        int totalSeats = 0;
+
+        do {
+            error = false;
+            try {
+                System.out.println("Enter the number of rows:");
+                totalRows = scanner.nextInt();
+                System.out.println("Enter the number of seats in each row:");
+                totalSeats = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println(INPUT_MISMATCH_MESSAGE);
+                error = true;
+                scanner.nextLine();
+            }
+        } while (error);
 
         String[][] cinema = cinemaCreation(totalRows, totalSeats);
 
@@ -27,7 +41,16 @@ public class Cinema {
             System.out.println("3. Statistics");
             System.out.println("0. Exit");
 
-            menuChoice = scanner.nextInt();
+            do {
+                error = false;
+                try {
+                    menuChoice = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println(INPUT_MISMATCH_MESSAGE);
+                    error = true;
+                    scanner.nextLine();
+                }
+            } while (error);
 
             switch (menuChoice) {
                 case 1:
@@ -50,8 +73,7 @@ public class Cinema {
         }
     }
 
-    public static String[][] cinemaCreation(int rows, int seats) {
-
+    private static String[][] cinemaCreation(int rows, int seats) {
         String[][] cinema = new String[rows + 1][seats + 1];
         int num = 1;
 
@@ -71,7 +93,7 @@ public class Cinema {
         return cinema;
     }
 
-    public static void printCinema(String[][] cinema) {
+    private static void printCinema(String[][] cinema) {
         System.out.println();
         System.out.println("Cinema:");
         for (int i = 0; i < cinema.length; i++) {
@@ -83,13 +105,24 @@ public class Cinema {
         System.out.println();
     }
 
-    public static int buyTicket(String[][] cinema) {
+    private static int buyTicket(String[][] cinema) {
+        int rowNumber = 0;
+        int seatNumber = 0;
 
         while (true) {
-            System.out.println("Enter a row number:");
-            int rowNumber = scanner.nextInt();
-            System.out.println("Enter a seat number in that row:");
-            int seatNumber = scanner.nextInt();
+            do {
+                error = false;
+                try {
+                    System.out.println("Enter a row number:");
+                    rowNumber = scanner.nextInt();
+                    System.out.println("Enter a seat number in that row:");
+                    seatNumber = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println(INPUT_MISMATCH_MESSAGE);
+                    error = true;
+                    scanner.nextLine();
+                }
+            } while (error);
 
             if ((cinema.length - 1) < rowNumber || (cinema[0].length - 1) < seatNumber) {
                 System.out.println("Wrong input!");
@@ -105,7 +138,7 @@ public class Cinema {
         }
     }
 
-    public static int calculateTicketPrice(String[][] cinema, int chosenRow) {
+    private static int calculateTicketPrice(String[][] cinema, int chosenRow) {
         int totalNumberOfSeats = (cinema.length - 1) * (cinema[0].length - 1);
         int ticketPrice;
 
@@ -117,7 +150,7 @@ public class Cinema {
         return ticketPrice;
     }
 
-    public static void printStatistics(int numOfPurchasedTickets, double percentageOfPurchasedSeats, int currentIncome, int totalIncome) {
+    private static void printStatistics(int numOfPurchasedTickets, double percentageOfPurchasedSeats, int currentIncome, int totalIncome) {
         System.out.printf("Number of purchased tickets: %d%n", numOfPurchasedTickets);
         System.out.printf("Percentage: %.2f", percentageOfPurchasedSeats);
         System.out.print("%\n");
@@ -125,7 +158,7 @@ public class Cinema {
         System.out.printf("Total income: $%d%n%n", totalIncome);
     }
 
-    public static int calculateTotalIncome(int rows, int seats) {
+    private static int calculateTotalIncome(int rows, int seats) {
         int totalNumberOfSeats = rows * seats;
 
         if (totalNumberOfSeats <= 60) {
@@ -136,7 +169,7 @@ public class Cinema {
                 : (rows / 2 * seats * 10) + (rows / 2 * seats * 8);
     }
 
-    public static double calculatePercentageOfPurchasedSeats(int totalNumberOfSeats, int numOfPurchasedTickets) {
+    private static double calculatePercentageOfPurchasedSeats(int totalNumberOfSeats, int numOfPurchasedTickets) {
         return (double) numOfPurchasedTickets * 100 / (double) totalNumberOfSeats;
     }
 }
