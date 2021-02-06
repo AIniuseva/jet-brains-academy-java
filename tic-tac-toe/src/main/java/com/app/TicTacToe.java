@@ -1,5 +1,6 @@
 package com.app;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TicTacToe {
@@ -16,6 +17,8 @@ public class TicTacToe {
         Scanner scanner = new Scanner(System.in);
 
         String input;
+
+        System.out.print("Enter cells: ");
         input = scanner.nextLine();
         char[][] ticTacToeFiled = new char[3][3];
 
@@ -28,17 +31,52 @@ public class TicTacToe {
             }
         }
 
+        printTicTacToeGameField(ticTacToeFiled);
+
+        int xCoord = 0;
+        int oCoord = 0;
+
+        while (true) {
+            boolean isError;
+            do {
+                isError = false;
+                try {
+                    System.out.print("Enter the coordinates: ");
+                    xCoord = scanner.nextInt();
+                    oCoord = scanner.nextInt();
+                    if (xCoord > 3 || oCoord > 3) {
+                        System.out.println("Coordinates should be from 1 to 3!");
+                        isError = true;
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("You should enter numbers!");
+                    isError = true;
+                }
+                scanner.nextLine();
+            } while (isError);
+
+            if (ticTacToeFiled[xCoord - 1][oCoord - 1] != X && ticTacToeFiled[xCoord - 1][oCoord - 1] != O) {
+                ticTacToeFiled[xCoord - 1][oCoord - 1] = X;
+                break;
+            } else {
+                System.out.println("This cell is occupied! Choose another one!");
+            }
+        }
+        printTicTacToeGameField(ticTacToeFiled);
+
+        System.out.println(gameResultChecking(ticTacToeFiled, input));
+    }
+
+    private static void printTicTacToeGameField(char[][] gameField) {
         System.out.println("---------");
-        for (int i = 0; i < ticTacToeFiled.length; i++) {
+        for (int i = 0; i < gameField.length; i++) {
             System.out.print("| ");
-            for (int j = 0; j < ticTacToeFiled[0].length; j++) {
-                System.out.print(ticTacToeFiled[i][j] + " ");
+            for (int j = 0; j < gameField[0].length; j++) {
+                System.out.print(gameField[i][j] + " ");
             }
             System.out.println("|");
         }
         System.out.println("---------");
-
-        System.out.println(gameResultChecking(ticTacToeFiled, input));
     }
 
     private static String gameResultChecking(char[][] gameField, String input) {
