@@ -4,35 +4,64 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TicTacToe {
-
+    private static final Scanner scanner = new Scanner(System.in);
     private static final char X = 'X';
     private static final char O = 'O';
-    private static final String GAME_NOT_FINISHED_RESULT = "Game not finished";
     private static final String DRAW_RESULT = "Draw";
     private static final String X_WINS_RESULT = "X wins";
     private static final String O_WINS_RESULT = "O wins";
-    private static final String IMPOSSIBLE_RESULT = "Impossible";
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        char[][] ticTacToeField = new char[3][3];
 
-        String input;
-
-        System.out.print("Enter cells: ");
-        input = scanner.nextLine();
-        char[][] ticTacToeFiled = new char[3][3];
-
-        int k = 0;
-
-        for (int i = 0; i < ticTacToeFiled.length; i++) {
-            for (int j = 0; j < ticTacToeFiled[0].length; j++) {
-                ticTacToeFiled[i][j] = input.charAt(k);
-                k++;
+        for (int i = 0; i < ticTacToeField.length; i++) {
+            for (int j = 0; j < ticTacToeField[0].length; j++) {
+                ticTacToeField[i][j] = ' ';
             }
         }
 
-        printTicTacToeGameField(ticTacToeFiled);
+        boolean gameStart = true;
 
+        while (gameStart) {
+            printTicTacToeGameField(ticTacToeField);
+            coordinatesEntering(ticTacToeField, X);
+            gameStart = checkingEmptySpaces(ticTacToeField);
+
+            if (!gameStart || !resultChecking(ticTacToeField).equals(DRAW_RESULT)) {
+                break;
+            }
+            printTicTacToeGameField(ticTacToeField);
+            coordinatesEntering(ticTacToeField, O);
+
+            if (!resultChecking(ticTacToeField).equals(DRAW_RESULT)) {
+                break;
+            }
+            gameStart = checkingEmptySpaces(ticTacToeField);
+        }
+        printTicTacToeGameField(ticTacToeField);
+        System.out.println(resultChecking(ticTacToeField));
+    }
+
+    private static boolean checkingEmptySpaces(char[][] gameField) {
+        boolean gameStart = true;
+
+        for (char[] chars : gameField) {
+            for (char aChar : chars) {
+                if (aChar == ' ') {
+                    gameStart = true;
+                    break;
+                } else {
+                    gameStart = false;
+                }
+            }
+            if (gameStart) {
+                break;
+            }
+        }
+        return gameStart;
+    }
+
+    private static void coordinatesEntering(char[][] gameField, char playerSide) {
         int xCoord = 0;
         int oCoord = 0;
 
@@ -55,55 +84,28 @@ public class TicTacToe {
                 scanner.nextLine();
             } while (isError);
 
-            if (ticTacToeFiled[xCoord - 1][oCoord - 1] != X && ticTacToeFiled[xCoord - 1][oCoord - 1] != O) {
-                ticTacToeFiled[xCoord - 1][oCoord - 1] = X;
+            if (gameField[xCoord - 1][oCoord - 1] != X && gameField[xCoord - 1][oCoord - 1] != O) {
+                gameField[xCoord - 1][oCoord - 1] = playerSide;
                 break;
             } else {
                 System.out.println("This cell is occupied! Choose another one!");
             }
         }
-        printTicTacToeGameField(ticTacToeFiled);
-
-        System.out.println(gameResultChecking(ticTacToeFiled, input));
     }
 
     private static void printTicTacToeGameField(char[][] gameField) {
         System.out.println("---------");
-        for (int i = 0; i < gameField.length; i++) {
+        for (char[] chars : gameField) {
             System.out.print("| ");
             for (int j = 0; j < gameField[0].length; j++) {
-                System.out.print(gameField[i][j] + " ");
+                System.out.print(chars[j] + " ");
             }
             System.out.println("|");
         }
         System.out.println("---------");
     }
 
-    private static String gameResultChecking(char[][] gameField, String input) {
-        if (impossibleSituationResultChecking(gameField)) {
-            return IMPOSSIBLE_RESULT;
-        } else {
-            return ResultChecking(gameField, input);
-        }
-    }
-
-    private static boolean impossibleSituationResultChecking(char[][] gameField) {
-        int totalXs = 0;
-        int totalOs = 0;
-
-        for (int i = 0; i < gameField.length; i++) {
-            for (int j = 0; j < gameField[0].length; j++) {
-                if (gameField[i][j] == X) {
-                    totalXs++;
-                } else if (gameField[i][j] == O) {
-                    totalOs++;
-                }
-            }
-        }
-        return totalXs - totalOs >= 2 || totalOs - totalXs >= 2 || totalOs == 0 || totalXs == 0;
-    }
-
-    private static String ResultChecking(char[][] gameField, String input) {
+    private static String resultChecking(char[][] gameField) {
         int xHor = 0;
         int oHor = 0;
         int xVert = 0;
@@ -128,20 +130,12 @@ public class TicTacToe {
             if (oVert < 3) { oVert = 0; }
         }
 
-        if (xHor == 3 && oHor == 3 || xVert == 3 && oVert == 3) {
-            return IMPOSSIBLE_RESULT;
-        } else if (xHor == 3 || xVert == 3) {
+        if (xHor == 3 || xVert == 3 || (gameField[0][0] == X && gameField[1][1] == X && gameField[2][2] == X ||
+                gameField[2][0] == X && gameField[1][1] == X && gameField[0][2] == X)) {
             return X_WINS_RESULT;
-        } else if (oHor == 3 || oVert == 3) {
+        } else if (oHor == 3 || oVert == 3 || (gameField[0][0] == O && gameField[1][1] == O && gameField[2][2] == O ||
+                gameField[2][0] == O && gameField[1][1] == O && gameField[0][2] == O)) {
             return O_WINS_RESULT;
-        } else if (gameField[0][0] == X && gameField[1][1] == X && gameField[2][2] == X ||
-                gameField[2][0] == X && gameField[1][1] == X && gameField[0][2] == X) {
-            return X_WINS_RESULT;
-        } else if (gameField[0][0] == O && gameField[1][1] == O && gameField[2][2] == O ||
-                gameField[2][0] == O && gameField[1][1] == O && gameField[0][2] == O) {
-            return O_WINS_RESULT;
-        } else if ((input.contains(" ") || input.contains("_"))) {
-            return GAME_NOT_FINISHED_RESULT;
         } else return DRAW_RESULT;
     }
 }
