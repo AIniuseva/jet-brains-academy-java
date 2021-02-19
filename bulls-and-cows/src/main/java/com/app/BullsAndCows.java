@@ -4,51 +4,34 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class BullsAndCows {
-
     private static final Scanner scanner = new Scanner(System.in);
+    private static final Random random = new Random();
+    private static final char[] symbolsForSecretCode = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'a', 'b', 'c', 'd', 'e', 'f',
+            'g', 'h', 'i', 'j', 'k', 'l',
+            'm', 'n', 'o', 'p', 'q', 'r',
+            's', 't', 'u', 'v', 'w', 'x',
+            'y', 'z'};
 
     public static void main(String[] args) {
-
-        Random random = new Random();
         int randomNumberLength;
+        int numberOfPossibleCharacters;
 
-        do {
-            System.out.println("Please, enter the secret code's length:");
-            randomNumberLength = scanner.nextInt();
-            if (randomNumberLength > 10) {
-                System.out.printf("Error: can't generate a secret number with a length of " +
-                        "%d because there aren't enough unique digits.%n", randomNumberLength);
-            }
-        } while (randomNumberLength > 10);
+        System.out.println("Input the length of the secret code:");
+        randomNumberLength = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Input the number of possible symbols in the code:");
+        numberOfPossibleCharacters = scanner.nextInt();
         scanner.nextLine();
 
-        int randomRange = (int) (Math.pow(10, --randomNumberLength));
+        final String secretCode = uniqueCodeGenerator(randomNumberLength, numberOfPossibleCharacters);
 
-        String secretCode = null;
-        boolean isContainsTheSameNumber = true;
-
-        //unique number generator:
-        while (isContainsTheSameNumber) {
-            secretCode = String.valueOf(random.nextInt(((randomRange * 10) - 1) - randomRange + 1) + randomRange);
-
-            if (secretCode.length() == 1) {
-                break;
-            }
-            for (int i = 0; i < secretCode.length() - 1; i++) {
-                StringBuilder secretCodeSave = new StringBuilder(secretCode);
-                char numberForCheck = secretCode.charAt(i);
-                secretCodeSave.deleteCharAt(i);
-                isContainsTheSameNumber = secretCodeSave.toString().contains(String.valueOf(numberForCheck));
-
-                if (isContainsTheSameNumber) {
-                    break;
-                }
-            }
-        }
+        System.out.printf("The secret is prepared: %s ", "*".repeat(randomNumberLength));
+        System.out.printf(numberOfPossibleCharacters > 10 ? "(0-9, a-%s)%n" : "(0-9)%n",
+                symbolsForSecretCode[numberOfPossibleCharacters - 1]);
 
         String playerGuess = null;
         int turn = 1;
-
         System.out.println("Okay, let's start a game!");
 
         while (!secretCode.equals(playerGuess)) {
@@ -57,8 +40,34 @@ public class BullsAndCows {
             resultChecker(playerGuess, secretCode);
             turn++;
         }
-
         System.out.println("Congratulations! You guessed the secret code.");
+    }
+
+    private static String uniqueCodeGenerator(int randomNumberLength, int numberOfPossibleCharacters) {
+        char[] secretCode = new char[randomNumberLength];
+        boolean isContainsTheSameSymbol = true;
+
+        while (isContainsTheSameSymbol) {
+            for (int i = 0; i < randomNumberLength; i++) {
+                secretCode[i] = symbolsForSecretCode[random.nextInt(numberOfPossibleCharacters)];
+            }
+
+            if (secretCode.length == 1) {
+                break;
+            }
+
+            for (int i = 0; i < secretCode.length - 1; i++) {
+                StringBuilder secretCodeSave = new StringBuilder(String.valueOf(secretCode));
+                char symbolForCheck = secretCode[i];
+                secretCodeSave.deleteCharAt(i);
+                isContainsTheSameSymbol = secretCodeSave.toString().contains(String.valueOf(symbolForCheck));
+
+                if (isContainsTheSameSymbol) {
+                    break;
+                }
+            }
+        }
+        return String.valueOf(secretCode);
     }
 
     private static String resultChecker(String guess, String secretCode) {
