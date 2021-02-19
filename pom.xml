@@ -12,6 +12,7 @@
         <module>cinema-room-manager</module>
         <module>tic-tac-toe</module>
         <module>bulls-and-cows</module>
+        <module>coffee-machine</module>
     </modules>
 
     <properties>
