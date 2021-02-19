@@ -14,17 +14,37 @@ public class BullsAndCows {
             'y', 'z'};
 
     public static void main(String[] args) {
-        int randomNumberLength;
-        int numberOfPossibleCharacters;
+        int randomNumberLength = 0;
+        int numberOfPossibleCharacters = 0;
 
-        System.out.println("Input the length of the secret code:");
-        randomNumberLength = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Input the number of possible symbols in the code:");
-        numberOfPossibleCharacters = scanner.nextInt();
-        scanner.nextLine();
+        String input = null;
+        boolean isError;
+        do {
+            isError = false;
+            try {
+                System.out.println("Input the length of the secret code:");
+                input = scanner.nextLine();
+                randomNumberLength = Integer.parseInt(input);
 
-        final String secretCode = uniqueCodeGenerator(randomNumberLength, numberOfPossibleCharacters);
+                System.out.println("Input the number of possible symbols in the code:");
+                input = scanner.nextLine();
+                numberOfPossibleCharacters = Integer.parseInt(input);
+
+                if (randomNumberLength > numberOfPossibleCharacters || randomNumberLength == 0) {
+                    System.out.printf("Error: it's not possible to generate a code with a length of %d with %d unique symbols.%n",
+                            randomNumberLength, numberOfPossibleCharacters);
+                    isError = true;
+                } else if (numberOfPossibleCharacters > 36) {
+                    System.out.println("Error: maximum number of possible symbols in the code is 36 (0-9, a-z).");
+                    isError = true;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Error: " + input + " isn't a valid number.");
+                isError = true;
+            }
+        } while (isError);
+
+        final String secretCode = uniqueNumberGenerator(randomNumberLength, numberOfPossibleCharacters);
 
         System.out.printf("The secret is prepared: %s ", "*".repeat(randomNumberLength));
         System.out.printf(numberOfPossibleCharacters > 10 ? "(0-9, a-%s)%n" : "(0-9)%n",
@@ -43,7 +63,7 @@ public class BullsAndCows {
         System.out.println("Congratulations! You guessed the secret code.");
     }
 
-    private static String uniqueCodeGenerator(int randomNumberLength, int numberOfPossibleCharacters) {
+    private static String uniqueNumberGenerator(int randomNumberLength, int numberOfPossibleCharacters) {
         char[] secretCode = new char[randomNumberLength];
         boolean isContainsTheSameSymbol = true;
 
@@ -95,4 +115,3 @@ public class BullsAndCows {
         return guess;
     }
 }
-
