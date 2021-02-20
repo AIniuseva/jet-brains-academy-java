@@ -44,7 +44,7 @@ public class BullsAndCows {
             }
         } while (isError);
 
-        final String secretCode = uniqueNumberGenerator(randomNumberLength, numberOfPossibleCharacters);
+        final String secretCode = uniqueCodeGenerator(randomNumberLength, numberOfPossibleCharacters);
 
         System.out.printf("The secret is prepared: %s ", "*".repeat(randomNumberLength));
         System.out.printf(numberOfPossibleCharacters > 10 ? "(0-9, a-%s)%n" : "(0-9)%n",
@@ -63,28 +63,19 @@ public class BullsAndCows {
         System.out.println("Congratulations! You guessed the secret code.");
     }
 
-    private static String uniqueNumberGenerator(int randomNumberLength, int numberOfPossibleCharacters) {
+    private static String uniqueCodeGenerator(int randomNumberLength, int numberOfPossibleCharacters) {
         char[] secretCode = new char[randomNumberLength];
-        boolean isContainsTheSameSymbol = true;
+        char randomSymbol;
 
-        while (isContainsTheSameSymbol) {
-            for (int i = 0; i < randomNumberLength; i++) {
-                secretCode[i] = symbolsForSecretCode[random.nextInt(numberOfPossibleCharacters)];
-            }
+        secretCode[0] = symbolsForSecretCode[random.nextInt(numberOfPossibleCharacters)];
 
-            if (secretCode.length == 1) {
-                break;
-            }
+        int i = 1;
+        while (i < randomNumberLength) {
+            randomSymbol = symbolsForSecretCode[random.nextInt(numberOfPossibleCharacters)];
 
-            for (int i = 0; i < secretCode.length - 1; i++) {
-                StringBuilder secretCodeSave = new StringBuilder(String.valueOf(secretCode));
-                char symbolForCheck = secretCode[i];
-                secretCodeSave.deleteCharAt(i);
-                isContainsTheSameSymbol = secretCodeSave.toString().contains(String.valueOf(symbolForCheck));
-
-                if (isContainsTheSameSymbol) {
-                    break;
-                }
+            if (!String.valueOf(secretCode).contains(String.valueOf(randomSymbol))) {
+                secretCode[i] = randomSymbol;
+                i++;
             }
         }
         return String.valueOf(secretCode);
