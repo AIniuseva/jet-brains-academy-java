@@ -10,13 +10,24 @@ public class CoffeeMachineImplementation extends CoffeeMachineContents {
         super(availableWater, availableMilk, availableCoffeeBeans, disposableCups, moneyVault);
     }
 
-
     public void coffeePurchasing(CoffeeType coffeeType) {
-        this.setAvailableWater(this.getAvailableWater() - coffeeType.getWaterForOneCup());
-        this.setAvailableMilk(this.getAvailableMilk() - coffeeType.getMilkForOneCup());
-        this.setAvailableCoffeeBeans(this.getAvailableCoffeeBeans() - coffeeType.getCoffeeBeansForOneCup());
-        this.setDisposableCups(this.getDisposableCups() - 1);
-        this.setMoneyVault(this.getMoneyVault() + coffeeType.getOneCupPrice());
+        if(this.getAvailableWater() < coffeeType.getWaterForOneCup()){
+            System.out.println("Sorry, not enough water!");
+        }else if(this.getAvailableMilk() < coffeeType.getMilkForOneCup()){
+            System.out.println("Sorry, not enough milk!");
+        }else if(this.getAvailableCoffeeBeans() < coffeeType.getCoffeeBeansForOneCup()){
+            System.out.println("Sorry, not enough coffee beans!");
+        }else if(this.getDisposableCups() == 0){
+            System.out.println("Sorry, not enough disposable cups!");
+        }else{
+            System.out.println("I have enough resources, making you a coffee!");
+
+            this.setAvailableWater(this.getAvailableWater() - coffeeType.getWaterForOneCup());
+            this.setAvailableMilk(this.getAvailableMilk() - coffeeType.getMilkForOneCup());
+            this.setAvailableCoffeeBeans(this.getAvailableCoffeeBeans() - coffeeType.getCoffeeBeansForOneCup());
+            this.setDisposableCups(this.getDisposableCups() - 1);
+            this.setMoneyVault(this.getMoneyVault() + coffeeType.getOneCupPrice());
+        }
     }
 
     public void showCoffeeMachineContent() {

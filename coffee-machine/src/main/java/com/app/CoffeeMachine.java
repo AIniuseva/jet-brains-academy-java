@@ -15,45 +15,49 @@ public class CoffeeMachine {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        while(true){
+            System.out.println("Write action (buy, fill, take, remaining, exit)");
 
-        coffeeMachine.showCoffeeMachineContent();
-
-        System.out.println("Write action (buy, fill, take)");
-
-        String chosenAction = scanner.nextLine();
-        switch (chosenAction) {
-            case "buy":
-                menuForBuying();
-                break;
-            case "fill":
-                menuForFilling();
-                break;
-            case "take":
-                menuForTaking();
-                break;
-            default:
-                System.out.println("Unknown action!");
-                break;
+            String chosenAction = scanner.nextLine();
+            switch (chosenAction) {
+                case "buy":
+                    menuForBuying();
+                    break;
+                case "fill":
+                    menuForFilling();
+                    break;
+                case "take":
+                    menuForTaking();
+                    break;
+                case "remaining":
+                    coffeeMachine.showCoffeeMachineContent();
+                    break;
+                case "exit":
+                    return;
+                default:
+                    System.out.println("Unknown action!");
+                    break;
+            }
+            System.out.println();
         }
     }
 
     private static void menuForBuying() {
-        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:");
-        int choice = scanner.nextInt();
+        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");
+        String choice = scanner.nextLine();
 
         switch (choice) {
-            case 1:
+            case "1":
                 coffeeMachine.coffeePurchasing(ESPRESSO);
-                coffeeMachine.showCoffeeMachineContent();
                 break;
-            case 2:
+            case "2":
                 coffeeMachine.coffeePurchasing(LATTE);
-                coffeeMachine.showCoffeeMachineContent();
                 break;
-            case 3:
+            case "3":
                 coffeeMachine.coffeePurchasing(CAPPUCCINO);
-                coffeeMachine.showCoffeeMachineContent();
                 break;
+            case "back":
+                return;
             default:
                 System.out.println("Wrong statement!");
                 break;
@@ -69,14 +73,12 @@ public class CoffeeMachine {
         int coffeeBeansForFilling = scanner.nextInt();
         System.out.println("Write how many disposable cups of coffee do you want to add:");
         int disposableCupsForFilling = scanner.nextInt();
-
+        scanner.nextLine();
         coffeeMachine.coffeeMachineFilling(waterForFilling, milkForFilling, coffeeBeansForFilling, disposableCupsForFilling);
-        coffeeMachine.showCoffeeMachineContent();
     }
 
     private static void menuForTaking() {
         System.out.printf("I gave you $%d%n", coffeeMachine.getMoneyVault());
         coffeeMachine.setMoneyVault(0);
-        coffeeMachine.showCoffeeMachineContent();
     }
 }
