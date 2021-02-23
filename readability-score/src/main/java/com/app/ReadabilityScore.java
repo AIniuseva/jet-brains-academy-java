@@ -9,7 +9,6 @@ import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class ReadabilityScore {
-
     public static void main(String[] args) {
         File textFile = new File(args[0]);
         Scanner scanner = new Scanner(System.in);
@@ -88,7 +87,7 @@ public class ReadabilityScore {
                         decimalFormat.format(score), ReadabilityTest.ageOfUnderstanding(score));
                 break;
             case "SMOG":
-                score = ReadabilityTest.SimpleMeasureOfGobbledygook(totalSentences, totalPolysyllables);
+                score = ReadabilityTest.simpleMeasureOfGobbledygook(totalSentences, totalPolysyllables);
                 System.out.printf("Simple Measure of Gobbledygook: %s (about %d-year-olds).%n",
                         decimalFormat.format(score), ReadabilityTest.ageOfUnderstanding(score));
                 break;
@@ -100,7 +99,7 @@ public class ReadabilityScore {
             case "all":
                 double ARIscore = ReadabilityTest.automatedReadabilityIndex(totalWords, totalSentences, totalCharacters);
                 double FKscore = ReadabilityTest.fleschKincaidReadabilityTest(totalWords, totalSentences, totalSyllables);
-                double SMOGscore = ReadabilityTest.SimpleMeasureOfGobbledygook(totalSentences, totalPolysyllables);
+                double SMOGscore = ReadabilityTest.simpleMeasureOfGobbledygook(totalSentences, totalPolysyllables);
                 double CLscore = ReadabilityTest.colemanLiauIndex(averageNumberOfCharacterPer100words, averageNumberOfSentencesPer100words);
                 double averageAge = (double) (ReadabilityTest.ageOfUnderstanding(ARIscore) + ReadabilityTest.ageOfUnderstanding(FKscore) +
                         ReadabilityTest.ageOfUnderstanding(SMOGscore) + ReadabilityTest.ageOfUnderstanding(CLscore)) / 4;
