@@ -14,6 +14,7 @@
         <module>bulls-and-cows</module>
         <module>coffee-machine</module>
         <module>readability-score</module>
+        <module>encryption-decryption</module>
     </modules>
 
     <properties>
