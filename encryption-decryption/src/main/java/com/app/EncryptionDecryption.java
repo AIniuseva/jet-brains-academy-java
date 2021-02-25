@@ -16,16 +16,16 @@ public class EncryptionDecryption {
 
         for (int i = 0; i < message.length(); i++) {
             if (String.valueOf(message.charAt(i)).matches("[a-z]")) {
-                if ((int) message.charAt(i) + key < (int) 'z') {
-                    encryptedMessage.append((char) ((int) message.charAt(i) + key));
+                if ((int) message.charAt(i) + key < 'z') {
+                    encryptedMessage.append((char) (message.charAt(i) + key));
                 } else {
-                    encryptedMessage.append((char) ((int) 'a' - 1 + key - ((int) 'z' - (int) message.charAt(i))));
+                    encryptedMessage.append((char) ('a' - 1 + key - ('z' - message.charAt(i))));
                 }
             } else if (String.valueOf(message.charAt(i)).matches("[A-Z]")) {
-                if ((int) message.charAt(i) + key < (int) 'Z') {
-                    encryptedMessage.append((char) ((int) message.charAt(i) + key));
+                if ((int) message.charAt(i) + key < 'Z') {
+                    encryptedMessage.append((char) (message.charAt(i) + key));
                 } else {
-                    encryptedMessage.append((char) ((int) 'A' - 1 + key - ((int) 'Z' - (int) message.charAt(i))));
+                    encryptedMessage.append((char) ('A' - 1 + key - ('Z' - message.charAt(i))));
                 }
             } else {
                 encryptedMessage.append(message.charAt(i));
@@ -37,11 +37,12 @@ public class EncryptionDecryption {
 
     private static StringBuilder primitiveEncryptor(String message) {
         StringBuilder encryptedMessage = new StringBuilder();
+
         for (int i = 0; i < message.length(); i++) {
             if (String.valueOf(message.charAt(i)).matches("[a-z]")) {
-                encryptedMessage.append((char) ((int) 'z' - ((int) message.charAt(i) - (int) 'a')));
+                encryptedMessage.append((char) ('z' - (message.charAt(i) - 'a')));
             } else if (String.valueOf(message.charAt(i)).matches("[A-Z]")) {
-                encryptedMessage.append((char) ((int) 'Z' - ((int) message.charAt(i) - (int) 'A')));
+                encryptedMessage.append((char) ('Z' - (message.charAt(i) - 'A')));
             } else {
                 encryptedMessage.append(message.charAt(i));
             }
