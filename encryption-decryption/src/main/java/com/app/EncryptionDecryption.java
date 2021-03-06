@@ -2,21 +2,22 @@ package com.app;
 
 import com.app.service.Decryption;
 import com.app.service.Encryption;
+import com.app.service.Strategy;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class EncryptionDecryption {
-    public static void main(String[] args) {
+    private static String data = null;
+    private static String savingFile = null;
+
+    public static void main(String[] args) { //TODO: refactor all
         String mode = "enc";
         int key = 0;
-        String data = null;
         String dataFile = null;
-        String savingFile = null;
-
+        String alg = null;
         boolean fileSaving = false;
         boolean fileReading = false;
 
@@ -33,40 +34,45 @@ public class EncryptionDecryption {
             } else if ("-out".equals(args[i])) {
                 savingFile = args[i + 1];
                 fileSaving = true;
+            } else if ("-alg".equals(args[i])) {
+                alg = args[i + 1];
             }
         }
-
         if (fileReading) {
-            File file = new File(dataFile);
-            try (Scanner scanner = new Scanner(file)) {
-                data = scanner.nextLine();
-            } catch (FileNotFoundException e) {
-                System.out.printf("File not found: %s%n", file.getName());
-            }
+            Scanner scanner = new Scanner(dataFile);
+            data = String.valueOf(scanner.nextLine());
+            scanner.close();
         }
 
-        if ("enc".equals(mode)) {
-            Encryption encryption = new Encryption(data);
-            if (fileSaving) {
-                try (FileWriter fileWriter = new FileWriter(savingFile)) {
-                    fileWriter.write(String.valueOf(encryption.keyEncryptor(key)));
-                } catch (IOException e) {
-                    System.out.printf("Error with file: %s%n", savingFile);
+        switch (mode) {
+            case "enc":
+                Strategy encStrategy = new Strategy(new Encryption(), key, alg);
+                if (fileSaving) {
+                    savingToFile(String.valueOf(encStrategy.getChangedMessage(data)));
+                } else {
+                    System.out.println(encStrategy.getChangedMessage(data));
                 }
-            } else {
-                System.out.println(encryption.keyEncryptor(key));
-            }
-        } else {
-            Decryption decryption = new Decryption(data);
-            if (fileSaving) {
-                try (FileWriter fileWriter = new FileWriter(savingFile)) {
-                    fileWriter.write(String.valueOf(decryption.keyDecryptor(key)));
-                } catch (IOException e) {
-                    System.out.printf("Error with file: %s%n", savingFile);
+                break;
+            case "dec":
+                Strategy decStrategy = new Strategy(new Decryption(), key, alg);
+                if (fileSaving) {
+                    savingToFile(String.valueOf(decStrategy.getChangedMessage(data)));
+                } else {
+                    System.out.println(decStrategy.getChangedMessage(data));
                 }
-            } else {
-                System.out.println(decryption.keyDecryptor(key));
-            }
+                break;
+            default:
+                System.out.println("Error!");
+                break;
+        }
+    }
+
+    private static void savingToFile(String message) {
+        File file = new File(savingFile);
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            fileWriter.write(message);
+        } catch (IOException e) {
+            System.out.printf("Error with file: %s%n", savingFile);
         }
     }
 }
