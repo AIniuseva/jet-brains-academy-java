@@ -5,6 +5,7 @@ import com.app.service.Encryption;
 import com.app.service.Strategy;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -13,7 +14,7 @@ public class EncryptionDecryption {
     private static String data = null;
     private static String savingFile = null;
 
-    public static void main(String[] args) { //TODO: refactor all
+    public static void main(String[] args) {
         String mode = "enc";
         int key = 0;
         String dataFile = null;
@@ -38,10 +39,14 @@ public class EncryptionDecryption {
                 alg = args[i + 1];
             }
         }
+
         if (fileReading) {
-            Scanner scanner = new Scanner(dataFile);
-            data = String.valueOf(scanner.nextLine());
-            scanner.close();
+            File file = new File(dataFile);
+            try (Scanner scanner = new Scanner(file)) {
+                data = String.valueOf(scanner.nextLine());
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found: " + dataFile);
+            }
         }
 
         switch (mode) {

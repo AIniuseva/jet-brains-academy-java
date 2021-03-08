@@ -1,7 +1,5 @@
 package com.app.service;
 
-import com.app.service.DecEncStrategy;
-
 public class Encryption implements DecEncStrategy {
     @Override
     public StringBuilder messageUnicodeChanging(String message, int key) {
