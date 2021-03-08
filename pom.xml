@@ -15,6 +15,7 @@
         <module>coffee-machine</module>
         <module>readability-score</module>
         <module>encryption-decryption</module>
+        <module>simple-banking-system</module>
     </modules>
 
     <properties>
