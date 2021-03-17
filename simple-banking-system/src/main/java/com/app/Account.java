@@ -2,7 +2,7 @@ package com.app;
 
 import java.util.Random;
 
-class Account {
+public class Account {
     private final String cardNumber;
     private final int pinCode;
 
