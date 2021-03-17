@@ -30,13 +30,32 @@ public class Account {
     public String generateCardNumber() {
         StringBuilder cardNum = new StringBuilder();
         cardNum.append(4);
-        for (int i = 1; i < 16; i++) {
+        for (int i = 1; i < 15; i++) {
             if (i < 6) {
                 cardNum.append(0);
             } else {
                 cardNum.append(random.nextInt(9));
             }
         }
+        cardNum.append(luhnAlgorithm(cardNum));
         return String.valueOf(cardNum);
+    }
+
+    public int luhnAlgorithm(StringBuilder cardNum) {
+        int controlNumber = 0;
+
+        for (int i = cardNum.length() - 1; i > -1; i--) {
+            if (i % 2 == 0) {
+                int number = (Integer.parseInt(String.valueOf(cardNum.charAt(i))) * 2);
+                if (number > 9) {
+                    controlNumber += number - 9;
+                } else {
+                    controlNumber += number;
+                }
+            } else {
+                controlNumber += Integer.parseInt(String.valueOf(cardNum.charAt(i)));
+            }
+        }
+        return controlNumber % 10 == 0 ? 0 : 10 - controlNumber % 10;
     }
 }
