@@ -1,19 +1,26 @@
 package com.app.menu;
 
 import com.app.Account;
+import com.app.database.Database;
 
 import java.util.Scanner;
 
-public class MenuImpl implements MenuInterface{
+public class MenuImpl implements MenuInterface {
     private Account account;
+    private Database database;
+
     @Override
     public void accountCreation() {
         account = new Account();
+        database = new Database("jdbc:sqlite:D:\\Java-projects\\jet-brains-academy-java\\simple-banking-system\\src\\main\\resources\\bankdatabase.db");
+        database.addNewCard(account.getCardNumber(), String.valueOf(account.getPinCode()));
+
         System.out.println("Your card has been created");
         System.out.println("Your card number:" + '\n' + account.getCardNumber());
         System.out.println("Your card PIN:" + '\n' + account.getPinCode());
         System.out.println();
     }
+
     private static final Scanner scanner = new Scanner(System.in);
 
     @Override
