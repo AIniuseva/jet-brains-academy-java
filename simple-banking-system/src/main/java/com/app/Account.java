@@ -10,7 +10,7 @@ public class Account {
 
     public Account() {
         this.cardNumber = generateCardNumber();
-        this.pinCode = random.nextInt((9999 - 1000 + 1) + 1000);
+        this.pinCode = random.nextInt(9999 - 1000 + 1) + 1000;
     }
 
     public String getCardNumber() {
