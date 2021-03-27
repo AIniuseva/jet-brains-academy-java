@@ -65,7 +65,7 @@ public class MenuImpl implements MenuInterface {
                     database.addIncome(currentAccount);
                     break;
                 case 3:
-
+                    database.doTransfer(currentAccount);
                     break;
                 case 4:
 
