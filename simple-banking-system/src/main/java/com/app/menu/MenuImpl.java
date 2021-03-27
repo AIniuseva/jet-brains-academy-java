@@ -1,12 +1,11 @@
 package com.app.menu;
 
-import com.app.Account;
+import com.app.account.Account;
 import com.app.database.Database;
 
 import java.util.Scanner;
 
 public class MenuImpl implements MenuInterface {
-    private Account account;
     private final Database database = new Database("jdbc:sqlite:D:\\Java-projects\\jet-brains-academy-java\\simple-banking-system\\src\\main\\resources\\bankdatabase.db");
 
     private Account currentAccount;
@@ -17,7 +16,7 @@ public class MenuImpl implements MenuInterface {
 
     @Override
     public void accountCreation() {
-        account = new Account();
+        Account account = new Account();
         database.addNewCard(account.getCardNumber(), String.valueOf(account.getPinCode()));
 
         System.out.println("Your card has been created");
@@ -38,7 +37,7 @@ public class MenuImpl implements MenuInterface {
 
         if (database.checkPinCode(cardNumber,pinCode)){
             System.out.println("You have successfully logged in!");
-            setCurrentAccount(account);
+            this.currentAccount = new Account(cardNumber,pinCode);
             accountMenu();
         } else {
             System.out.println("Wrong card number or PIN!");
@@ -49,6 +48,7 @@ public class MenuImpl implements MenuInterface {
     @Override
     public void accountMenu() {
         while (true) {
+            System.out.println();
             System.out.println("1. Balance\n" +
                     "2. Add income\n" +
                     "3. Do transfer\n" +
@@ -59,10 +59,10 @@ public class MenuImpl implements MenuInterface {
 
             switch (menuChoice) {
                 case 1:
-                    System.out.println(account.getBalance());
+                    System.out.println("Balance: " + database.getBalance(currentAccount));
                     break;
                 case 2:
-
+                    database.addIncome(currentAccount);
                     break;
                 case 3:
 
@@ -71,6 +71,7 @@ public class MenuImpl implements MenuInterface {
 
                     break;
                 case 5:
+                    setCurrentAccount(null);
                     return;
                 case 0:
                     System.exit(0);

@@ -1,9 +1,10 @@
 package com.app.database;
 
-import com.app.Account;
+import com.app.account.Account;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class Database {
     private final String databaseUrl;
@@ -47,14 +48,13 @@ public class Database {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(databaseUrl);
 
-        String select = "SELECT pin FROM card WHERE number=(?)";
+        String selectPin = "SELECT pin FROM card WHERE number=(?)";
 
         try (Connection con = dataSource.getConnection()) {
-            try (PreparedStatement preparedStatement = con.prepareStatement(select)) {
-                preparedStatement.setString(1,number);
+            try (PreparedStatement preparedStatement = con.prepareStatement(selectPin)) {
+                preparedStatement.setString(1, number);
                 ResultSet table = preparedStatement.executeQuery();
                 String realPin = table.getString("pin");
-                System.out.println(pin);
 
                 return pin.equals(realPin);
 
@@ -65,6 +65,48 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public int getBalance(Account account) {
+        SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setUrl(databaseUrl);
+
+        String selectBalance = "SELECT balance FROM card WHERE number=(?)";
+
+        try (Connection con = dataSource.getConnection()) {
+            try (PreparedStatement preparedStatement = con.prepareStatement(selectBalance)) {
+                preparedStatement.setString(1, account.getCardNumber());
+                ResultSet table = preparedStatement.executeQuery();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+
+    }
+
+    public void addIncome(Account account) {
+        Scanner scanner = new Scanner(System.in);
+        int income = scanner.nextInt();
+
+        SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setUrl(databaseUrl);
+
+        String selectBalance = "UPDATE card SET balance = (?) WHERE number=(?)";
+
+        try (Connection con = dataSource.getConnection()) {
+            try (PreparedStatement preparedStatement = con.prepareStatement(selectBalance)) {
+                preparedStatement.setInt(1, income);
+                preparedStatement.setString(2, account.getCardNumber());
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

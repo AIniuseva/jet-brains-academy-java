@@ -1,28 +1,27 @@
-package com.app;
+package com.app.account;
 
 import java.util.Random;
 
 public class Account {
     private final String cardNumber;
-    private final int pinCode;
-
-    private long balance;
+    private final String pinCode;
 
     public Account() {
         this.cardNumber = generateCardNumber();
-        this.pinCode = random.nextInt(9999 - 1000 + 1) + 1000;
+        this.pinCode = String.valueOf(random.nextInt(9999 - 1000 + 1) + 1000);
+    }
+
+    public Account(String cardNumber, String pinCode) {
+        this.cardNumber = cardNumber;
+        this.pinCode = pinCode;
     }
 
     public String getCardNumber() {
         return cardNumber;
     }
 
-    public int getPinCode() {
+    public String getPinCode() {
         return pinCode;
-    }
-
-    public long getBalance() {
-        return balance;
     }
 
     private final Random random = new Random();
