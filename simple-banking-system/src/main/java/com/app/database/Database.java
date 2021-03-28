@@ -150,7 +150,6 @@ public class Database {
                     System.out.println("Not enough money!");
                     return;
                 }
-
                 con.setAutoCommit(false);
 
                 updateStatement.setInt(1, -moneyToTransfer);
@@ -162,10 +161,28 @@ public class Database {
                 updateStatement.executeUpdate();
 
                 con.commit();
-
                 System.out.println("Success!");
             } catch (SQLException e) {
                 System.out.println("Such a card does not exist.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeAccount(Account currentAccount){
+        SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setUrl(databaseUrl);
+
+        String deleteCard = "DELETE FROM card WHERE number = (?)";
+
+        try (Connection con = dataSource.getConnection()) {
+            try (PreparedStatement preparedStatement = con.prepareStatement(deleteCard)) {
+                preparedStatement.setString(1, currentAccount.getCardNumber());
+                preparedStatement.executeUpdate();
+                System.out.println("The account has been closed!");
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();

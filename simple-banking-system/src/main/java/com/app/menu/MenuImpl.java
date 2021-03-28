@@ -68,7 +68,7 @@ public class MenuImpl implements MenuInterface {
                     database.doTransfer(currentAccount);
                     break;
                 case 4:
-
+                    database.closeAccount(currentAccount);
                     break;
                 case 5:
                     setCurrentAccount(null);
