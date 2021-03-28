@@ -13,9 +13,9 @@ public class DatabaseManagement implements DatabaseManagementInterface {
         this.databaseUrl = databaseUrl;
 
         String createTable = "CREATE TABLE IF NOT EXISTS card(id INTEGER PRIMARY KEY," +
-                                                             "number TEXT NOT NULL," +
-                                                             "pin TEXT NOT NULL," +
-                                                             "balance INTEGER DEFAULT 0);";
+                "number TEXT NOT NULL," +
+                "pin TEXT NOT NULL," +
+                "balance INTEGER DEFAULT 0);";
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(databaseUrl);
         try (Connection con = dataSource.getConnection()) {
@@ -33,9 +33,13 @@ public class DatabaseManagement implements DatabaseManagementInterface {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(this.databaseUrl);
 
+        String insertCard = "INSERT INTO card (number,pin) VALUES (?,?);";
+
         try (Connection con = dataSource.getConnection()) {
-            try (Statement statement = con.createStatement()) {
-                statement.executeUpdate("INSERT INTO card (number,pin) VALUES (" + number + "," + pin + ");");
+            try (PreparedStatement preparedStatement = con.prepareStatement(insertCard)) {
+                preparedStatement.setString(1, number);
+                preparedStatement.setString(2, pin);
+                preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -121,6 +125,9 @@ public class DatabaseManagement implements DatabaseManagementInterface {
         if (currentAccount.getCardNumber().equals(numberToTransfer)) {
             System.out.println("You can't transfer money to the same account!");
             return;
+        } else if (currentAccount.luhnAlgorithmBuilder(new StringBuilder(numberToTransfer)) > 0) {
+            System.out.println("Probably you made a mistake in the card number. Please try again!");
+            return;
         }
 
         System.out.println("Enter how much money you want to transfer:");
@@ -135,7 +142,6 @@ public class DatabaseManagement implements DatabaseManagementInterface {
 
         try (Connection con = dataSource.getConnection()) {
             try (PreparedStatement updateStatement = con.prepareStatement(updateBalance)) {
-                //TODO: add luhn algorithm checker
                 PreparedStatement selectStatement = con.prepareStatement(selectBalance);
                 selectStatement.setString(1, currentAccount.getCardNumber());
                 ResultSet table = selectStatement.executeQuery();

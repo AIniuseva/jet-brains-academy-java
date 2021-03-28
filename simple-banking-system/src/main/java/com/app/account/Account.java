@@ -36,11 +36,11 @@ public class Account {
                 cardNum.append(random.nextInt(9));
             }
         }
-        cardNum.append(luhnAlgorithm(cardNum));
+        cardNum.append(luhnAlgorithmBuilder(cardNum));
         return String.valueOf(cardNum);
     }
 
-    public int luhnAlgorithm(StringBuilder cardNum) {
+    public int luhnAlgorithmBuilder(StringBuilder cardNum) {
         int controlNumber = 0;
 
         for (int i = cardNum.length() - 1; i > -1; i--) {
