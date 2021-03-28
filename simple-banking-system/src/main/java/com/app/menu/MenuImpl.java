@@ -1,12 +1,13 @@
 package com.app.menu;
 
 import com.app.account.Account;
-import com.app.database.Database;
+import com.app.database.DatabaseManagement;
 
 import java.util.Scanner;
 
 public class MenuImpl implements MenuInterface {
-    private final Database database = new Database("jdbc:sqlite:D:\\Java-projects\\jet-brains-academy-java\\simple-banking-system\\src\\main\\resources\\bankdatabase.db");
+    private final DatabaseManagement databaseManagement = new DatabaseManagement
+            ("jdbc:sqlite:D:\\Java-projects\\jet-brains-academy-java\\simple-banking-system\\src\\main\\resources\\bankdatabase.db");
 
     private Account currentAccount;
 
@@ -17,7 +18,7 @@ public class MenuImpl implements MenuInterface {
     @Override
     public void accountCreation() {
         Account account = new Account();
-        database.addNewCard(account.getCardNumber(), String.valueOf(account.getPinCode()));
+        databaseManagement.addNewCard(account.getCardNumber(), String.valueOf(account.getPinCode()));
 
         System.out.println("Your card has been created");
         System.out.println("Your card number:" + '\n' + account.getCardNumber());
@@ -35,7 +36,7 @@ public class MenuImpl implements MenuInterface {
         System.out.println("Enter your PIN:");
         String pinCode = scanner.next();
 
-        if (database.checkPinCode(cardNumber,pinCode)){
+        if (databaseManagement.checkPinCode(cardNumber,pinCode)){
             System.out.println("You have successfully logged in!");
             this.currentAccount = new Account(cardNumber,pinCode);
             accountMenu();
@@ -59,17 +60,17 @@ public class MenuImpl implements MenuInterface {
 
             switch (menuChoice) {
                 case 1:
-                    System.out.println("Balance: " + database.getBalance(currentAccount));
+                    System.out.println("Balance: " + databaseManagement.getBalance(currentAccount));
                     break;
                 case 2:
-                    database.addIncome(currentAccount);
+                    databaseManagement.addIncome(currentAccount);
                     break;
                 case 3:
-                    database.doTransfer(currentAccount);
+                    databaseManagement.doTransfer(currentAccount);
                     break;
                 case 4:
-                    database.closeAccount(currentAccount);
-                    break;
+                    databaseManagement.closeAccount(currentAccount);
+                    return;
                 case 5:
                     setCurrentAccount(null);
                     return;

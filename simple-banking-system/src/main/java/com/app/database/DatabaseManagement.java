@@ -6,21 +6,21 @@ import org.sqlite.SQLiteDataSource;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Database {
+public class DatabaseManagement implements DatabaseManagementInterface {
     private final String databaseUrl;
 
-    public Database(String databaseUrl) {
+    public DatabaseManagement(String databaseUrl) {
         this.databaseUrl = databaseUrl;
 
+        String createTable = "CREATE TABLE IF NOT EXISTS card(id INTEGER PRIMARY KEY," +
+                                                             "number TEXT NOT NULL," +
+                                                             "pin TEXT NOT NULL," +
+                                                             "balance INTEGER DEFAULT 0);";
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(databaseUrl);
         try (Connection con = dataSource.getConnection()) {
-            try (Statement statement = con.createStatement()) { //TODO: change to prepare statement
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS card(" +
-                        "id INTEGER PRIMARY KEY ," +
-                        "number TEXT NOT NULL," +
-                        "pin TEXT NOT NULL," +
-                        "balance INTEGER DEFAULT 0);");
+            try (PreparedStatement preparedStatement = con.prepareStatement(createTable)) {
+                preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -170,7 +170,7 @@ public class Database {
         }
     }
 
-    public void closeAccount(Account currentAccount){
+    public void closeAccount(Account account) {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(databaseUrl);
 
@@ -178,7 +178,7 @@ public class Database {
 
         try (Connection con = dataSource.getConnection()) {
             try (PreparedStatement preparedStatement = con.prepareStatement(deleteCard)) {
-                preparedStatement.setString(1, currentAccount.getCardNumber());
+                preparedStatement.setString(1, account.getCardNumber());
                 preparedStatement.executeUpdate();
                 System.out.println("The account has been closed!");
             } catch (SQLException e) {
