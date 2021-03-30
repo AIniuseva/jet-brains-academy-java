@@ -11,7 +11,7 @@ public class MenuControl {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    public void startMenu(){
+    public void startMenu() {
         while (true) {
             System.out.println("1. Create an account");
             System.out.println("2. Log into account");

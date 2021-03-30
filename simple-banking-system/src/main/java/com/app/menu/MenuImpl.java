@@ -36,14 +36,13 @@ public class MenuImpl implements MenuInterface {
         System.out.println("Enter your PIN:");
         String pinCode = scanner.next();
 
-        if (databaseManagement.checkPinCode(cardNumber,pinCode)){
+        if (databaseManagement.checkPinCode(cardNumber, pinCode)) {
             System.out.println("You have successfully logged in!");
-            this.currentAccount = new Account(cardNumber,pinCode);
+            this.currentAccount = new Account(cardNumber, pinCode);
             accountMenu();
         } else {
             System.out.println("Wrong card number or PIN!");
         }
-
     }
 
     @Override

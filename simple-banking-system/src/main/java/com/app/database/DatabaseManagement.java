@@ -130,9 +130,6 @@ public class DatabaseManagement implements DatabaseManagementInterface {
             return;
         }
 
-        System.out.println("Enter how much money you want to transfer:");
-        int moneyToTransfer = scanner.nextInt();
-
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(databaseUrl);
 
@@ -151,6 +148,9 @@ public class DatabaseManagement implements DatabaseManagementInterface {
                 selectStatement.setString(1, numberToTransfer);
                 table = selectStatement.executeQuery();
                 table.getString("number"); //if number does not exist SQLException will appear
+
+                System.out.println("Enter how much money you want to transfer:");
+                int moneyToTransfer = scanner.nextInt();
 
                 if (Integer.parseInt(balance) < moneyToTransfer) {
                     System.out.println("Not enough money!");
